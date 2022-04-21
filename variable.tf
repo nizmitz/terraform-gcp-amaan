@@ -16,5 +16,5 @@ variable "gcp_zone" {
 }
 
 variable "instance_type" {
-  default = "f1-micro"
+  default = "g1-small"
 }

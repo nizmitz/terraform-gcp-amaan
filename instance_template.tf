@@ -24,9 +24,9 @@ resource "google_compute_instance_template" "amaan_template" {
   }
   scheduling {
     automatic_restart = false
-    preemptible = true
-    
-    
+    preemptible       = true
+
+
   }
 
   lifecycle {
@@ -46,8 +46,8 @@ resource "google_compute_instance_template" "amaan_template" {
     chmod +x /usr/local/bin/docker-compose
     ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
     wget https://raw.githubusercontent.com/nizmitz/terraform-gcp-amaan/main/docker-compose.yaml -O /root/docker-compose.yaml
-    docker-compose up -d -f /root/docker-compose.yaml
-    apt upgrade -y
+    cd /root
+    docker-compose up -d 
     EOF
   }
 }
