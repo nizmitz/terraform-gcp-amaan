@@ -8,9 +8,13 @@ variable "gcp_project" {
   default = "clever-seat-347900"
 }
 variable "gcp_region" {
-  default = "ASIA-SOUTHEAST2"
+  default = "asia-southeast2"
 }
 
 variable "gcp_zone" {
-  default = "ASIA-SOUTHEAST2-A"
+  default = "asia-southeast2-a"
+}
+
+variable "instance_type" {
+  default = "f1-micro"
 }

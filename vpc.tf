@@ -1,6 +1,3 @@
-resource "google_compute_network" "gcp_network" {
-  name = "vpc-amaan-emir"
-}
 
 resource "google_compute_firewall" "allow_port_http_firewall_rule" {
   name        = "allow-port-http-firewall"
@@ -15,4 +12,28 @@ resource "google_compute_firewall" "allow_port_http_firewall_rule" {
   }
   source_ranges = ["0.0.0.0/0"]
   target_tags   = ["web"]
+}
+
+resource "google_compute_subnetwork" "amaan_subnet" {
+  name                     = "amaan-jakarta-subnet"
+  ip_cidr_range            = "10.0.1.0/24"
+  network                  = google_compute_network.gcp_network.name
+  region                   = lower(var.gcp_region)
+  stack_type               = "IPV4_ONLY"
+  private_ip_google_access = true
+}
+
+/*
+resource "google_compute_subnetwork" "amaan_proxy_subnet" {
+  name          = "amaan-jakarta-proxy-subnet"
+  ip_cidr_range = "10.0.0.0/24"
+  network       = google_compute_network.gcp_network.name
+  region        = lower(var.gcp_region)
+  stack_type    = IPV4_ONLY
+}
+*/
+resource "google_compute_network" "gcp_network" {
+  name                    = "vpc-amaan-emir"
+  project                 = var.gcp_project
+  auto_create_subnetworks = false
 }

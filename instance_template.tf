@@ -1,67 +1,70 @@
-/*
-resource "google_service_account" "default" {
-  account_id   = "service-account-id"
-  display_name = "Service Account"
-}
+resource "google_compute_instance_template" "amaan_template" {
+  name_prefix  = "amaan-template-"
+  machine_type = var.instance_type
+  region       = lower(var.gcp_region)
+  project      = var.gcp_project
+  description  = "Amaan testing"
+  tags         = ["web"]
 
-resource "google_compute_instance_template" "default" {
-  name        = "amaan_template"
-  description = "This template is used to create app server instances."
 
-  tags = ["type", "testing"]
-
-  labels = {
-    environment = "dev"
-  }
-
-  instance_description = "Wordpress Amaan Testing INstance"
-  machine_type         = "f1-micro"
-  can_ip_forward       = false
-  preemptible = true
-  auto_restart = false
-  metadata_startup_script = "echo hi > /test.txt"
- 
-
-  // Create a new boot disk from an image
+  // boot disk
   disk {
-    source_image      = "debian-cloud/debian-10"
-    auto_delete       = true
-    boot              = true
-
-  // Use an existing disk resource
-  disk {
-    // Instance Templates reference disks by name, not self link
-    source      = google_compute_disk.foobar.name
-    auto_delete = false
-    boot        = false
+    source_image = "debian-cloud/debian-10"
+    auto_delete  = true
+    boot         = true
+    disk_type    = "pd-ssd"
+    disk_size_gb = 15
   }
-
+  // networking
   network_interface {
-    network = "default"
+    subnetwork = google_compute_subnetwork.amaan_subnet.name
+    access_config {
+      network_tier = "STANDARD"
+    }
+  }
+  scheduling {
+    automatic_restart = false
+    preemptible = true
+    
+    
   }
 
-  metadata = {
-    foo = "bar"
+  lifecycle {
+    create_before_destroy = true
+  }
+  metadata_startup_script = ""
+}
+/*
+resource "google_compute_instance_group_manager" "amaan_webserver" {
+  name               = "amaan-webserver-igm"
+  version {
+    instance_template  = google_compute_instance_template.amaan_template.id
+  }
+  base_instance_name = "amaan-web"
+  zone               =  lower(var.gcp_zone)
+  target_size        = "1"
+  
+  named_port {
+    name = "wordpress"
+    port = 80
   }
 
-  service_account {
-    # Google recommends custom service accounts that have cloud-platform scope and permissions granted via IAM Roles.
-    email  = google_service_account.default.email
-    scopes = ["cloud-platform"]
+  auto_healing_policies {
+    health_check      = google_compute_health_check.autohealing.id
+    initial_delay_sec = 600
   }
 }
 
-data "google_compute_image" "my_image" {
-  family  = "debian-10"
-  project = "debian-cloud"
-}
+resource "google_compute_health_check" "autohealing" {
+  name                = "autohealing-health-check"
+  check_interval_sec  = 10
+  timeout_sec         = 10
+  healthy_threshold   = 10
+  unhealthy_threshold = 10 # 50 seconds
 
-resource "google_compute_disk" "foobar" {
-  name  = "existing-disk"
-  image = data.google_compute_image.my_image.self_link
-  size  = 10
-  type  = "pd-ssd"
-  zone  = "asia-southeast2-a"
-}
+  http_health_check {
+    request_path = "/healthz"
+    port         = "80"
+  }
 }
 */
