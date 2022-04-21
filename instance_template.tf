@@ -51,27 +51,55 @@ resource "google_compute_instance_template" "amaan_template" {
     EOF
   }
 }
-/*
+
 resource "google_compute_instance_group_manager" "amaan_webserver" {
-  name               = "amaan-webserver-igm"
+  name = "amaan-webserver-igm"
   version {
-    instance_template  = google_compute_instance_template.amaan_template.id
+    instance_template = google_compute_instance_template.amaan_template.id
   }
   base_instance_name = "amaan-web"
-  zone               =  lower(var.gcp_zone)
-  target_size        = "1"
-  
+  zone               = lower(var.gcp_zone)
+  //target_size        = "1"
+
   named_port {
     name = "wordpress"
     port = 80
   }
 
+  update_policy {
+    type                  = "OPPORTUNISTIC"
+    minimal_action        = "REPLACE"
+    max_surge_fixed       = 2
+    max_unavailable_fixed = 1
+    replacement_method    = "SUBSTITUTE"
+  }
+  /*
   auto_healing_policies {
     health_check      = google_compute_health_check.autohealing.id
     initial_delay_sec = 600
   }
+*/
 }
 
+
+resource "google_compute_autoscaler" "amaan_autoscaler" {
+  name   = "amaan-igm-autoscaler"
+  zone   = lower(var.gcp_zone)
+  target = google_compute_instance_group_manager.amaan_webserver.id
+
+  autoscaling_policy {
+    max_replicas    = 2
+    min_replicas    = 1
+    cooldown_period = 120
+
+    cpu_utilization {
+      target = 0.9
+    }
+  }
+}
+
+
+/*
 resource "google_compute_health_check" "autohealing" {
   name                = "autohealing-health-check"
   check_interval_sec  = 10
