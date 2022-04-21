@@ -32,7 +32,23 @@ resource "google_compute_instance_template" "amaan_template" {
   lifecycle {
     create_before_destroy = true
   }
-  metadata_startup_script = ""
+
+  metadata = {
+    startup-script = <<-EOF
+    apt update 
+    apt upgrade - y
+    apt install apt-transport-https ca-certificates curl gnupg2 software-properties-common wget -y
+    curl -fsSL https://download.docker.com/linux/debian/gpg |  apt-key add -
+    add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable"
+    apt update
+    apt install docker-ce -y
+    curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+    chmod +x /usr/local/bin/docker-compose
+    ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+    wget https://raw.githubusercontent.com/nizmitz/terraform-gcp-amaan/main/docker-compose.yaml -o /root/docker-compose.yaml
+    docker-compose up -d  -f /root/docker-compose.yaml
+    EOF
+  }
 }
 /*
 resource "google_compute_instance_group_manager" "amaan_webserver" {
