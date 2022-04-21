@@ -36,8 +36,8 @@ resource "google_compute_instance_template" "amaan_template" {
   metadata = {
     startup-script = <<-EOF
     apt update 
-    apt upgrade - y
-    apt install apt-transport-https ca-certificates curl gnupg2 software-properties-common wget -y
+    apt install apt-transport-https ca-certificates curl gnupg2 software-properties-common -y
+    apt install wget -y
     curl -fsSL https://download.docker.com/linux/debian/gpg |  apt-key add -
     add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable"
     apt update
@@ -45,8 +45,9 @@ resource "google_compute_instance_template" "amaan_template" {
     curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
     chmod +x /usr/local/bin/docker-compose
     ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
-    wget https://raw.githubusercontent.com/nizmitz/terraform-gcp-amaan/main/docker-compose.yaml -o /root/docker-compose.yaml
-    docker-compose up -d  -f /root/docker-compose.yaml
+    wget https://raw.githubusercontent.com/nizmitz/terraform-gcp-amaan/main/docker-compose.yaml -O /root/docker-compose.yaml
+    docker-compose up -d -f /root/docker-compose.yaml
+    apt upgrade -y
     EOF
   }
 }
