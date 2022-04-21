@@ -1,3 +1,4 @@
+/*
 output "ip-address-internal" {
   description = "ip of the compute engine instance"
   value       = google_compute_instance.vm_instance.network_interface.0.network_ip
@@ -15,3 +16,4 @@ output "dns-record-name" {
   description = "the name of the record binded to"
   value       = cloudflare_record.waifu-botter-dns.name
 }
+*/

@@ -1,3 +1,4 @@
+/*
 resource "google_compute_instance" "vm_instance" {
   name         = "waifu-botter-instance"
   machine_type = "f1-micro"
@@ -23,3 +24,5 @@ resource "google_compute_instance" "vm_instance" {
 
   metadata_startup_script = "echo this is a test file for $(hostname) > / test.txt ; apt install nginx ; systemctl start nginx"
 }
+
+*/
