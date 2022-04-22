@@ -35,6 +35,7 @@ resource "google_compute_instance_template" "amaan_template" {
 
   metadata = {
     startup-script = <<-EOF
+    timedatectl set-timezone Asia/Jakarta
     apt update 
     apt install apt-transport-https ca-certificates curl gnupg2 software-properties-common -y
     apt install wget -y
@@ -70,7 +71,7 @@ resource "google_compute_instance_group_manager" "amaan_webserver" {
 
   auto_healing_policies {
     health_check      = google_compute_http_health_check.autohealing.id
-    initial_delay_sec = 900
+    initial_delay_sec = 180
   }
 }
 
@@ -82,7 +83,7 @@ resource "google_compute_autoscaler" "amaan_autoscaler" {
   autoscaling_policy {
     max_replicas    = 2
     min_replicas    = 1
-    cooldown_period = 600
+    cooldown_period = 60
 
     cpu_utilization {
       target = 0.9

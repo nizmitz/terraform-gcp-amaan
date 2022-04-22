@@ -17,7 +17,7 @@ resource "google_compute_backend_service" "amaan_webserver_backend" {
 
 resource "google_compute_http_health_check" "autohealing" {
   name                = "autohealing-health-check"
-  request_path        = "/wp-admin/install.php"
+  request_path        = "/wp-includes/images/blank.gif"
   check_interval_sec  = 5
   timeout_sec         = 1
   healthy_threshold   = 2
