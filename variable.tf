@@ -5,8 +5,9 @@ variable "nizmitz_cloudflare_api_token" {
   type = string
 }
 variable "gcp_project" {
-  default = "clever-seat-347900"
+    type = string
 }
+
 variable "gcp_region" {
   default = "asia-southeast2"
 }
@@ -16,5 +17,5 @@ variable "gcp_zone" {
 }
 
 variable "instance_type" {
-  default = "g1-small"
+  type = string
 }
