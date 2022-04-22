@@ -5,7 +5,7 @@ variable "nizmitz_cloudflare_api_token" {
   type = string
 }
 variable "gcp_project" {
-    type = string
+  type = string
 }
 
 variable "gcp_region" {
