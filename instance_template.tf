@@ -53,34 +53,26 @@ resource "google_compute_instance_template" "amaan_template" {
 }
 
 resource "google_compute_instance_group_manager" "amaan_webserver" {
-  name = "amaan-webserver-igm"
+  name               = "amaan-webserver-igm"
+  base_instance_name = "amaan-web"
+  zone               = lower(var.gcp_zone)
+
   version {
     instance_template = google_compute_instance_template.amaan_template.id
   }
-  base_instance_name = "amaan-web"
-  zone               = lower(var.gcp_zone)
-  //target_size        = "1"
+
+  target_size = 1
 
   named_port {
     name = "wordpress"
     port = 80
   }
 
-  update_policy {
-    type                  = "OPPORTUNISTIC"
-    minimal_action        = "REPLACE"
-    max_surge_fixed       = 2
-    max_unavailable_fixed = 1
-    replacement_method    = "SUBSTITUTE"
-  }
-  /*
   auto_healing_policies {
-    health_check      = google_compute_health_check.autohealing.id
-    initial_delay_sec = 600
+    health_check      = google_compute_http_health_check.autohealing.id
+    initial_delay_sec = 900
   }
-*/
 }
-
 
 resource "google_compute_autoscaler" "amaan_autoscaler" {
   name   = "amaan-igm-autoscaler"
@@ -90,26 +82,10 @@ resource "google_compute_autoscaler" "amaan_autoscaler" {
   autoscaling_policy {
     max_replicas    = 2
     min_replicas    = 1
-    cooldown_period = 120
+    cooldown_period = 600
 
     cpu_utilization {
       target = 0.9
     }
   }
 }
-
-
-/*
-resource "google_compute_health_check" "autohealing" {
-  name                = "autohealing-health-check"
-  check_interval_sec  = 10
-  timeout_sec         = 10
-  healthy_threshold   = 10
-  unhealthy_threshold = 10 # 50 seconds
-
-  http_health_check {
-    request_path = "/healthz"
-    port         = "80"
-  }
-}
-*/

@@ -19,3 +19,7 @@ variable "gcp_zone" {
 variable "instance_type" {
   type = string
 }
+
+variable "cloudflare_zone_id" {
+  type = string
+}

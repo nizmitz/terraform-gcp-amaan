@@ -9,4 +9,6 @@ resource "google_storage_bucket" "gcs_tf_state" {
   versioning {
     enabled = true
   }
+
+
 }

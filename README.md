@@ -9,9 +9,11 @@ This repo is a created for the assignment for amaan terraform
 - Instance template are created on minimal basis and using preemptible to save cost 
 - Instance also used metadata startup script to download all the necessary packages to install docker and docker-compose
 - Docker-compose used to start a containers needed for wordpress
-- Instance are behind a regional L4 tcp balancer to spread the load when there are multiple instances
+- Instance are behind a L7 http/https balancer to spread the load when there are multiple instances
 - Firewall rule only allow http to the instances directly but this might be not needed if we are using load balancer as the frontend/endpoint
 - Firewall rule allow ssh to troubleshoot startup script this can be commented later on 
+- Loadbalancer IP is exposed to public
+- DNS name is created using cloudflare pointed at __amaan-testing.nizmitz.digital__
 
 # Usage
 
